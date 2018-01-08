@@ -64,8 +64,6 @@ def start_server(host='127.0.0.1', port=8080):
 
     relay.start(1)
 
-    log.startLogging(sys.stdout)
-
     # create a Twisted Web resource for our WebSocket server
     wsFactory = WebSocketServerFactory(u"ws://{}:{}".format(host, port))
     wsFactory.protocol = WaitingServerProtocol
@@ -91,6 +89,7 @@ def usage():
 
 
 if __name__ == "__main__":
+    log.startLogging(sys.stdout)
     try:
         port = int(sys.argv[1])
     except (ValueError, IndexError):

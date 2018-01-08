@@ -1,14 +1,7 @@
 from __future__ import print_function
 import json
 
-from twisted.internet import reactor
-from twisted.internet.defer import inlineCallbacks, Deferred
 from twisted.internet.task import LoopingCall
-
-def sleep(delay):
-    d = Deferred()
-    reactor.callLater(delay, d.callback, None)
-    return d
 
 
 def print_waiting(waiting):
@@ -22,10 +15,13 @@ class Relay(object):
     def __init__(self):
         self.waiting = dict()
         self.done = dict()
+        self._started = False
 
     def start(self, interval):
-        looping = LoopingCall(self.check_done)
-        looping.start(interval=interval)
+        if not self._started:
+            looping = LoopingCall(self.check_done)
+            looping.start(interval=interval)
+            self._started = True
 
     def wait_for(self, _id, connection):
         if _id in self.done:
